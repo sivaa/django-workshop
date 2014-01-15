@@ -17,3 +17,12 @@ def movies(request):
         message = "Movie '%s' added successfully!" % name
         return render(request, "movies.html", {'message': message, 'movies': get_movies()})
     return HttpResponse("Invalid Request")
+
+def movies_remove(request):
+    if request.method == 'GET':
+        movie_id = request.GET.get('id', None)
+        movie = Movie.objects.get(pk=movie_id)
+        movie.delete()
+        message = "Movie '%s' deleted successfully!" % movie.name
+        return render(request, "movies.html", {'message': message, 'movies': get_movies()})
+    return HttpResponse("Invalid Request")
