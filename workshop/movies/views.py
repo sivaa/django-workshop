@@ -29,6 +29,30 @@ def movies(request):
         return render(request, "movies.html", {'message': message, 'movies': get_movies(), 'form': form})
     return HttpResponse("Invalid Request")
 
+
+def movies_edit(request, movie_id):
+    if request.method == 'GET':
+        try:
+            movie = Movie.objects.get(pk=movie_id)
+            form = MovieForm(initial={'name': movie.name})
+        except:
+            message = "Invalid Movie. Edit Failed!"
+            return render(request, "movies.html", {'movies': get_movies(), 'message': message, 'form': MovieForm()})
+        return render(request, "movies_edit.html", {'form':form })
+    if request.method == 'POST':
+        form = MovieForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            movie = Movie.objects.get(pk=movie_id)
+            movie.name = data['name']
+            movie.save()
+            message = "Movie %s modified successfully!" % data['name']
+            form = MovieForm()
+        else:
+            message = "There are errors in the given input"
+        return render(request, "movies.html", {'message': message, 'movies': get_movies(), 'form': form})
+    return HttpResponse("Invalid Request")
+
 def movies_remove(request, movie_id):
     if request.method == 'GET':
         try:

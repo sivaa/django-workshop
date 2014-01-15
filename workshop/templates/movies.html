@@ -11,7 +11,7 @@
 
     	{% if movies %}
             {% for movie in movies %}
-            	<li> <a href="/movies/remove/{{ movie.pk }}"> [x] </a> {{ movie.name }} </li>
+            	<li> <a href="/movies/remove/{{ movie.pk }}"> [x] </a> {{ movie.name }} <a href="/movies/edit/{{ movie.pk }}/"> [edit] </a> </li>
             {% endfor %}
         {% else %}
                 No movies added so far. <br>
