@@ -5,6 +5,9 @@
     </head>
     <body>
 
+        <form action="/movies/" method="post"> {% csrf_token %}
+            Movie Name: <input type="Text" name="name"> <input type="submit" value="Add">
+        </form>
 
     </body>
 </html>

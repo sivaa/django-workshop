@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
 def movies(request):
-    pass
+        return render(request, "movies.html")
