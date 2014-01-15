@@ -18,7 +18,8 @@
         {% endif %}  <br>
 
         <form action="/movies/" method="post"> {% csrf_token %}
-            Movie Name: <input type="Text" name="name"> <input type="submit" value="Add">
+        	{{ form.as_table }}
+            <input type="submit" value="Add">
         </form>
 
     </body>

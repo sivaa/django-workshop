@@ -3,6 +3,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 
 from movies.models import Movie
+from movies.forms import MovieForm
 
 
 def get_movies():
@@ -11,20 +12,23 @@ def get_movies():
 
 def movies(request):
     if request.method == 'GET':
-        return render(request, "movies.html", {'movies': get_movies()})
+        return render(request, "movies.html", {'movies': get_movies(), 'form': MovieForm()})
     if request.method == 'POST':
-        name = request.POST.get('name', None)
-        if len(name.strip()) == 0:
-            message = "Please enter a movie  name"
-        elif len(name.strip()) < 3:
-            message = "Not enough words!"
-        else:
-            try:
-                Movie.objects.create(name=name)
-                message = "Movie '%s' added successfully!" % name
-            except IntegrityError:
-                message = "Movie '%s' already exists!" % name
-        return render(request, "movies.html", {'message': message, 'movies': get_movies()})
+        form = MovieForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            name = data['name']
+            if len(name.strip()) == 0:
+                message = "Please enter a movie  name"
+            elif len(name.strip()) < 3:
+                message = "Not enough words!"
+            else:
+                try:
+                    Movie.objects.create(name=name)
+                    message = "Movie '%s' added successfully!" % name
+                except IntegrityError:
+                    message = "Movie '%s' already exists!" % name
+        return render(request, "movies.html", {'message': message, 'movies': get_movies(), 'form': MovieForm()})
     return HttpResponse("Invalid Request")
 
 def movies_remove(request):
@@ -36,5 +40,5 @@ def movies_remove(request):
             message = "Movie '%s' deleted successfully!" % movie.name
         except:
             message = "Invalid Movie. Delete Failed!"
-        return render(request, "movies.html", {'message': message, 'movies': get_movies()})
+        return render(request, "movies.html", {'message': message, 'movies': get_movies(), 'form': MovieForm()})
     return HttpResponse("Invalid Request")
