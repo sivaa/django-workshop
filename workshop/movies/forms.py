@@ -1,4 +1,4 @@
 from django import forms
 
 class MovieForm(forms.Form):
-    name = forms.CharField()
+    name = forms.CharField(required=False)
