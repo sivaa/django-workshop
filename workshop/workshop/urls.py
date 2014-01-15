@@ -7,7 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
 
     url(r'^movies/$', movies),
-    url(r'^movies/remove/$', movies_remove),
+    url(r'^movies/remove/(?P<movie_id>\d+)/$', movies_remove),
 
     url(r'^admin/', include(admin.site.urls)),
 )
