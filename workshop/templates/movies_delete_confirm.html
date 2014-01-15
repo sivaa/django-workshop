@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Django Workshop </title>
+    </head>
+    <body>
+
+        <form method="post"> {% csrf_token %}
+            Would you like to delete <b> {{ movie.name }} </b> ?
+            <input type="submit" value="Yep. Sure">
+        </form>
+
+    </body>
+</html>
