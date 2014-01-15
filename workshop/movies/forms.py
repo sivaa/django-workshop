@@ -1,7 +1,13 @@
 from django import forms
 
-class MovieForm(forms.Form):
-    name = forms.CharField(required = True)
+from movies.models import Movie
+
+
+class MovieForm(forms.ModelForm):
+#    name = forms.CharField(required = True)
+
+    class Meta:
+        model = Movie
 
     def clean_name(self):
         name = self.cleaned_data['name']
