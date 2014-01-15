@@ -9,5 +9,6 @@ def movies(request):
     if request.method == 'POST':
         name = request.POST.get('name', None)
         Movie.objects.create(name=name)
-        return HttpResponse("Movie '%s' added successfully!" % name)
+        message = "Movie '%s' added successfully!" % name
+        return render(request, "movies.html", {'message': message})
     return HttpResponse("Invalid Request")
