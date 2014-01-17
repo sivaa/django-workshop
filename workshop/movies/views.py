@@ -1,9 +1,9 @@
 from django.db.utils import IntegrityError
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-from movies.models import Movie
 from movies.forms import MovieForm
+from movies.models import Movie
 
 
 def get_movies():
@@ -12,7 +12,11 @@ def get_movies():
 
 def movies(request):
     if request.method == 'GET':
-        return render(request, "movies.html", {'movies': get_movies(), 'form': MovieForm()})
+        message = ''
+        if 'message' in request.session:
+            message = request.session['message']
+            del request.session['message']
+        return render(request, "movies.html", {'movies': get_movies(), 'message': message, 'form': MovieForm()})
     if request.method == 'POST':
         form = MovieForm(request.POST)
         if form.is_valid():
@@ -47,7 +51,9 @@ def movies_edit(request, movie_id):
             movie.name = data['name']
             movie.save()
             message = "Movie %s modified successfully!" % data['name']
-            form = MovieForm()
+            request.session['message'] = message
+            return redirect('/movies/')
+
         else:
             message = "There are errors in the given input"
             return render(request, "movies_edit.html", {'message': message, 'form': form})
@@ -67,6 +73,8 @@ def movies_remove(request, movie_id):
             movie = Movie.objects.get(pk=movie_id)
             movie.delete()
             message = "Movie '%s' deleted successfully!" % movie.name
+            request.session['message'] = message
+            return redirect('/movies/')
         except:
             message = "Invalid Movie. Delete Failed!"
         return render(request, "movies.html", {'message': message, 'movies': get_movies(), 'form': MovieForm()})
