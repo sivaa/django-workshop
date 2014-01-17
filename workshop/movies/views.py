@@ -50,6 +50,7 @@ def movies_edit(request, movie_id):
             form = MovieForm()
         else:
             message = "There are errors in the given input"
+            return render(request, "movies_edit.html", {'message': message, 'form': form})
         return render(request, "movies.html", {'message': message, 'movies': get_movies(), 'form': form})
     return HttpResponse("Invalid Request")
 

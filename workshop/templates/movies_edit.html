@@ -5,6 +5,10 @@
     </head>
     <body>
 
+		{% if message %}
+    		{{ message }} <br> <br>
+		{% endif %}
+
         <form method="post"> {% csrf_token %}
             {{ form.as_table }}
             <input type="submit" value="Save">
