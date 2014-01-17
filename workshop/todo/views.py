@@ -1,6 +1,8 @@
+import datetime
+
 from django.db.utils import IntegrityError
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from todo.forms import TaskForm
 from todo.models import Task
@@ -12,7 +14,11 @@ def get_tasks():
 
 def tasks(request):
     if request.method == 'GET':
-        return render(request, "tasks.html", {'tasks': get_tasks(), 'form': TaskForm()})
+        message = ''
+        if 'message' in request.session:
+            message = request.session['message']
+            del request.session['message']
+        return render(request, "tasks.html", {'tasks': get_tasks(), 'message': message, 'form': TaskForm()})
     if request.method == 'POST':
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -32,8 +38,8 @@ def tasks(request):
 def tasks_edit(request, task_id):
     if request.method == 'GET':
         try:
-            Task = Task.objects.get(pk=task_id)
-            form = TaskForm(initial={'name': Task.name})
+            task = Task.objects.get(pk=task_id)
+            form = TaskForm(initial={'name': task.name, 'priority': task.priority, 'last_date': task.last_date, 'done': task.done})
         except:
             message = "Invalid Task. Edit Failed!"
             return render(request, "tasks.html", {'tasks': get_tasks(), 'message': message, 'form': TaskForm()})
@@ -42,13 +48,16 @@ def tasks_edit(request, task_id):
         form = TaskForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            Task = Task.objects.get(pk=task_id)
-            Task.name = data['name']
-            Task.save()
+            task = Task.objects.get(pk=task_id)
+            task = Task(**form.cleaned_data)
+            task.pk = task_id
+            task.save()
             message = "Task %s modified successfully!" % data['name']
-            form = TaskForm()
+            request.session['message'] = message
+            return redirect('/tasks/')
         else:
             message = "There are errors in the given input"
+            return render(request, "tasks_edit.html", {'message': message, 'form': form})
         return render(request, "tasks.html", {'message': message, 'tasks': get_tasks(), 'form': form})
     return HttpResponse("Invalid Request")
 
@@ -65,7 +74,41 @@ def tasks_remove(request, task_id):
             task = Task.objects.get(pk=task_id)
             task.delete()
             message = "Task '%s' deleted successfully!" % task.name
+            request.session['message'] = message
+            return redirect('/tasks/')
+
         except:
             message = "Invalid Task. Delete Failed!"
         return render(request, "tasks.html", {'message': message, 'tasks': get_tasks(), 'form': TaskForm()})
+    return HttpResponse("Invalid Request")
+
+
+def tasks_priority_high(request):
+    if request.method == 'GET':
+        return render(request, "tasks.html", {'tasks': Task.objects.filter(priority = 'H'), 'form': TaskForm()})
+    return HttpResponse("Invalid Request")
+
+def tasks_priority_low(request):
+    if request.method == 'GET':
+        return render(request, "tasks.html", {'tasks': Task.objects.filter(priority = 'L'), 'form': TaskForm()})
+    return HttpResponse("Invalid Request")
+
+def tasks_completed(request):
+    if request.method == 'GET':
+        return render(request, "tasks.html", {'tasks': Task.objects.filter(done = True), 'form': TaskForm()})
+    return HttpResponse("Invalid Request")
+
+def tasks_not_completed(request):
+    if request.method == 'GET':
+        return render(request, "tasks.html", {'tasks': Task.objects.filter(done = False), 'form': TaskForm()})
+    return HttpResponse("Invalid Request")
+
+def tasks_overdue(request):
+    if request.method == 'GET':
+        return render(request, "tasks.html", {'tasks': Task.objects.filter(done = False, last_date__lt = datetime.date.today()), 'form': TaskForm()})
+    return HttpResponse("Invalid Request")
+
+def tasks_due_today(request):
+    if request.method == 'GET':
+        return render(request, "tasks.html", {'tasks': Task.objects.filter(done = False, last_date = datetime.date.today()), 'form': TaskForm()})
     return HttpResponse("Invalid Request")
