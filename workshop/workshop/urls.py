@@ -20,5 +20,9 @@ urlpatterns = patterns('',
     url(r'^tasks/completed/$', tasks_completed),
     url(r'^tasks/notcompleted/$', tasks_not_completed),
 
+    ('^accounts/', include('django.contrib.auth.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
+
+
+from django.contrib.auth import views as auth_views

@@ -1,9 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title> Django Workshop </title>
-    </head>
-    <body>
+{% extends "base.html" %}
+{% block content %}
 
 		Filter : <a href="/tasks/"> All </a> |
 				 <a href="/tasks/priority/high/"> High</a> |
@@ -30,5 +26,4 @@
             <input type="submit" value="Add">
         </form>
 
-    </body>
-</html>
+{% endblock %}

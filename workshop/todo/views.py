@@ -6,12 +6,14 @@ from django.shortcuts import render, redirect
 
 from todo.forms import TaskForm
 from todo.models import Task
+from django.contrib.auth.decorators import login_required
 
 
 def get_tasks():
     tasks = Task.objects.all()
     return tasks
 
+@login_required
 def tasks(request):
     if request.method == 'GET':
         message = ''
