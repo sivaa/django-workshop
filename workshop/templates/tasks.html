@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Django Workshop </title>
+    </head>
+    <body>
+
+		{% if message %}
+    		{{ message }} <br> <br>
+		{% endif %}
+
+    	{% if tasks %}
+            {% for task in tasks %}
+            	<li> <a href="/tasks/remove/{{ task.pk }}"> [x] </a>  ({{ task.priority }}) {{ task.name }} is due at {{ task.last_date }}  <a href="/tasks/edit/{{ task.pk }}/"> [edit] </a> </li>
+            {% endfor %}
+        {% else %}
+                No tasks added so far. <br>
+        {% endif %}  <br>
+
+        <form action="/tasks/" method="post"> {% csrf_token %}
+        	{{ form.as_table }}
+            <input type="submit" value="Add">
+        </form>
+
+    </body>
+</html>

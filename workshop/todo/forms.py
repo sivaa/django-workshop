@@ -1,13 +1,11 @@
 from django import forms
+from todo.models import Task
 
-from movies.models import Movie
 
-
-class MovieForm(forms.ModelForm):
-#    name = forms.CharField(required = True)
+class TaskForm(forms.ModelForm):
 
     class Meta:
-        model = Movie
+        model = Task
 
     def clean_name(self):
         name = self.cleaned_data['name']

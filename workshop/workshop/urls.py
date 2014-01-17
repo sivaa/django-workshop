@@ -1,16 +1,16 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-from movies.views import movies, movies_remove, movies_edit
+from todo.views import tasks, tasks_remove, tasks_edit
 
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    url(r'^movies/$', movies),
-    url(r'^movies/remove/(?P<movie_id>\d+)/$', movies_remove),
-    url(r'^movies/edit/(?P<movie_id>\d+)/$', movies_edit),
+    url(r'^tasks/$', tasks),
+    url(r'^tasks/remove/(?P<task_id>\d+)/$', tasks_remove),
+    url(r'^tasks/edit/(?P<task_id>\d+)/$', tasks_edit),
 
     url(r'^admin/', include(admin.site.urls)),
 )
