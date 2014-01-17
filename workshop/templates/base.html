@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Django Workshop </title>
+    </head>
+    <body>
+
+        <div>
+            Welcome <b> {{ user.username }} </b>
+                <a href="{% url 'admin:password_change' %}">Change password</a> /
+                <a href="{% url 'admin:logout' %}">Log out</a>
+        </div>
+
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
