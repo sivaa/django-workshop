@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {%  block content %}
-
-        <form method="post"> {% csrf_token %}
+<div class="panel panel-default">
+  <div class="panel-heading">Modify Task</div>
+  <div class="panel-body">
+        <form id="f1" method="post"> {% csrf_token %}
             {{ form.as_table }}
             <input type="submit" value="Save">
         </form>
+</div></div>
 
 {% endblock %}

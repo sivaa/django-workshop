@@ -1,29 +1,72 @@
 {% extends "base.html" %}
 {% block content %}
 
-		Filter : <a href="/tasks/"> All </a> |
-				 <a href="/tasks/priority/high/"> High</a> |
-				 <a href="/tasks/priority/low/"> Low</a> |
-				 <a href="/tasks/duetoday/"> Due Today </a> |
-				 <a href="/tasks/overdue/"> Over due </a> |
-				 <a href="/tasks/completed/"> Completed </a> |
-				 <a href="/tasks/notcompleted/"> Not Completed </a> <br>
 
-		{% if message %}
-    		{{ message }} <br> <br>
+<div class="panel panel-default">
+
+<div class="panel-heading">
+
+	<ul class="nav nav-pills">
+				<li  {% if page == 'All' %} class='active' {% endif %}><a href="/tasks/"> All </a></li>
+				 <li {% if page == 'H' %} class='active' {% endif %}><a href="/tasks/priority/high/"> High</a></li>
+				 <li {% if page == 'L' %} class='active' {% endif %}><a href="/tasks/priority/low/"> Low</a></li>
+				 <li {% if page == 'T' %} class='active' {% endif %}><a href="/tasks/duetoday/"> Due Today </a></li>
+				 <li {% if page == 'OD' %} class='active' {% endif %}><a href="/tasks/overdue/"> Over due </a></li>
+				 <li {% if page == 'C' %} class='active' {% endif %}><a href="/tasks/completed/"> Completed </a></li>
+				 <li {% if page == 'NC' %} class='active' {% endif %}><a href="/tasks/notcompleted/"> Not Completed </a></li>
+				</ul>
+</div>
+
+	<div class="panel-body">
+	{% if message %}
+		<div class="alert alert-success alert-dismissable">
+  		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  		{{ message }}
+		</div>
+
 		{% endif %}
-
-    	{% if tasks %}
+              	{% if tasks %}
+              <div class="table-responsive">
+              <table  class="table">
+          	 <tr align="center" style="font-weight:bold;">
+              <td>#</td>
+              <td align="left">Task Name</td>
+              <td >Due Date</td>
+              <td>Status</td>
+              <td>Edit</td>
+            </tr>
             {% for task in tasks %}
-            	<li> <a href="/tasks/remove/{{ task.pk }}"> [x] </a>  ({{ task.priority }}) {{ task.name }} is due at {{ task.last_date }}  <a href="/tasks/edit/{{ task.pk }}/"> [edit] </a> </li>
+       <tbody>
+              <tr align="center" {% if task.done %} style="background-color:#E6E6E6;"  {% else %}  style="background-color:#A5BEE9;" {% endif %} >
+              <td><a href="/tasks/remove/{{ task.pk }}"> <i class="fa fa-trash-o"></i> </a>  </td>
+              <td align="left" {% if task.done %} style="text-decoration: line-through;" {% endif %}>{{ task.name }} {% if task.priority == 'H' %}<i class="fa fa-star" style="color:#c91019;"></i>{% endif %}</td>
+              <td {% if task.done %} style="text-decoration: line-through;" {% endif %}>{{ task.last_date }}</td>
+              <td>{% if task.done %}<i class="fa fa-check-square-o" style="color:#207920;"></i>{% else %}<i class="fa fa-clock-o"></i>{% endif %} </td>
+              <td><a href="/tasks/edit/{{ task.pk }}/"> <i class="fa fa-pencil-square-o"></i>  </a></td>
+            </tr>
             {% endfor %}
+        </tbody>
+        </table>
+        </div>
         {% else %}
                 No tasks. <br>
-        {% endif %}  <br>
+        {% endif %}
 
-        <form action="/tasks/" method="post"> {% csrf_token %}
+
+
+</div>
+</div>
+<div class="panel panel-default">
+  <div class="panel-heading">Add New Task</div>
+  <div class="panel-body">
+    <form action="/tasks/" method="post" >
+        <div id="f1" class="form-group"> {% csrf_token %}
+
         	{{ form.as_table }}
-            <input type="submit" value="Add">
+            <input type="submit" value="Add" class="btn btn-default" style="margin-left:20px;">
+        </div>
         </form>
+  </div>
+</div>
 
 {% endblock %}
